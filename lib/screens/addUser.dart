@@ -30,7 +30,7 @@ class _AddUserState extends State<AddUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Contact Buddy"),
+        title: const Text("Contents Buddy"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -72,7 +72,6 @@ class _AddUserState extends State<AddUser> {
                 height: 20.0,
               ),
               TextField(
-                  maxLength: 10,
                   keyboardType: TextInputType.number,
                   controller: _userContactController,
                   decoration: InputDecoration(
@@ -90,10 +89,10 @@ class _AddUserState extends State<AddUser> {
                   controller: _userDescriptionController,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    hintText: 'Enter Description',
-                    labelText: 'Description',
+                    hintText: 'Enter Email',
+                    labelText: 'Email',
                     errorText: _validateDescription
-                        ? 'Description Value Can\'t Be Empty'
+                        ? 'Email Value Can\'t Be Empty'
                         : null,
                   )),
               const SizedBox(
@@ -102,7 +101,7 @@ class _AddUserState extends State<AddUser> {
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
+                  primary: Color.fromARGB(255, 15, 155, 194),
                   minimumSize: const Size.fromHeight(50),
                   // NEW
                 ),
@@ -177,7 +176,7 @@ class _AddUserState extends State<AddUser> {
               // ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
+                  primary: Color.fromARGB(255, 15, 155, 194),
                   minimumSize: const Size.fromHeight(50),
                   // NEW
                 ),

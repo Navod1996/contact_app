@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +33,9 @@ class _EditUserState extends State<EditUser> {
       _userNameController.text = widget.user.name ?? '';
       _userContactController.text = widget.user.contact ?? '';
       _userDescriptionController.text = widget.user.description ?? '';
-      //image
+       _imageFile = widget.user.image as PickedFile?;
+
+      //_imageFile = widget.user.image.toString() as PickedFile?;
     });
     super.initState();
   }
@@ -41,7 +44,7 @@ class _EditUserState extends State<EditUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Contact Buddy"),
+        title: const Text("Contents Buddy"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -50,12 +53,16 @@ class _EditUserState extends State<EditUser> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Edit New User',
+                'Edit Contact',
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.cyan,
                     fontWeight: FontWeight.w500),
               ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              imageProfile(),
               const SizedBox(
                 height: 20.0,
               ),
@@ -88,69 +95,111 @@ class _EditUserState extends State<EditUser> {
                   controller: _userDescriptionController,
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    hintText: 'Enter Description',
-                    labelText: 'Description',
+                    hintText: 'Enter Email',
+                    labelText: 'Email',
                     errorText: _validateDescription
-                        ? 'Description Value Can\'t Be Empty'
+                        ? 'Email Value Can\'t Be Empty'
                         : null,
                   )),
               const SizedBox(
                 height: 20.0,
               ),
-              Row(
-                children: [
-                  TextButton(
-                      style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.teal,
-                          textStyle: const TextStyle(fontSize: 15)),
-                      onPressed: () async {
-                        setState(() {
-                          _userNameController.text.isEmpty
-                              ? _validateName = true
-                              : _validateName = false;
-                          _userContactController.text.isEmpty
-                              ? _validateContact = true
-                              : _validateContact = false;
-                          _userDescriptionController.text.isEmpty
-                              ? _validateDescription = true
-                              : _validateDescription = false;
-                        });
-                        if (_validateName == false &&
-                            _validateContact == false &&
-                            _validateDescription == false) {
-                          // print("Good Data Can Save");
-                          var _user = User();
-                          _user.id = widget.user.id;
-                          _user.name = _userNameController.text;
-                          _user.contact = _userContactController.text;
-                          _user.image = widget.user.image;
-                          _user.description = _userDescriptionController.text;
-                          var result = await _userService.UpdateUser(_user);
-                          Navigator.pop(context, result);
-                        }
-                      },
-                      child: const Text('Update Details')),
-                  const SizedBox(
-                    width: 10.0,
-                  ),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.red,
-                          textStyle: const TextStyle(fontSize: 15)),
-                      onPressed: () {
-                        _userNameController.text = '';
-                        _userContactController.text = '';
-                        _userDescriptionController.text = '';
-                      },
-                      child: const Text('Clear Details'))
-                ],
-              )
+              // Buttons
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(255, 13, 165, 189),
+                  minimumSize: const Size.fromHeight(50),
+                  // NEW
+                ),
+                onPressed: () async {
+                  setState(() {
+                    _userNameController.text.isEmpty
+                        ? _validateName = true
+                        : _validateName = false;
+                    _userContactController.text.isEmpty
+                        ? _validateContact = true
+                        : _validateContact = false;
+                    _userDescriptionController.text.isEmpty
+                        ? _validateDescription = true
+                        : _validateDescription = false;
+                  });
+                  if (_validateName == false &&
+                      _validateContact == false &&
+                      _validateDescription == false) {
+                    // print("Good Data Can Save");
+                    var _user = User();
+                    _user.id = widget.user.id;
+                    _user.name = _userNameController.text;
+                    _user.contact = _userContactController.text;
+                    _user.description = _userDescriptionController.text;
+                    _user.image = _imageFile!.path.toString();
+                    log(_imageFile!.path.toString());
+
+                    var result = await _userService.UpdateUser(_user);
+                    Navigator.pop(context, result);
+                  }
+                },
+                child: const Text(
+                  'Update Contact',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              //clear button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(255, 8, 185, 185),
+                  minimumSize: const Size.fromHeight(50),
+                  // NEW
+                ),
+                onPressed: () {
+                  _userNameController.text = '';
+                  _userContactController.text = '';
+                  _userDescriptionController.text = '';
+                },
+                child: const Text(
+                  'Clear',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget imageProfile() {
+    return Center(
+      child: Stack(children: <Widget>[
+        CircleAvatar(
+          radius: 80.0,
+          // ignore: unnecessary_null_comparison
+          backgroundImage: _imageFile == null
+              ? const AssetImage("images/user.png") as ImageProvider
+              : FileImage(File(_imageFile!.path)),
+        ),
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: InkWell(
+            onTap: () async {
+              final pickedFile =
+                  await _picker.getImage(source: ImageSource.gallery);
+              setState(() {
+                _imageFile = pickedFile!;
+              });
+            },
+            child: const Icon(
+              Icons.camera_alt,
+              color: Colors.teal,
+              size: 28.0,
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }

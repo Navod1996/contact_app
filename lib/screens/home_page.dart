@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:contact_app/model/User.dart';
 import 'package:contact_app/screens/EditUser.dart';
 import 'package:contact_app/screens/addUser.dart';
-import 'package:contact_app/screens/viewUser.dart';
 import 'package:contact_app/services/userService.dart';
 import 'package:flutter/material.dart';
 
@@ -23,17 +22,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void _runFilter(String enteredKeyword) {
     List<User> results = [];
     if (enteredKeyword.isEmpty) {
-     log('keyword is empty');
+      log('keyword is empty');
       results = _userList;
     } else {
       log(enteredKeyword);
-     
+
       results = _userList
-          .where((user) => user.name!
-              .toLowerCase()
-              .contains(enteredKeyword.toLowerCase()))
+          .where((user) =>
+              user.name!.toLowerCase().contains(enteredKeyword.toLowerCase()))
           .toList();
-     
     }
     setState(() {
       _foundUsers = results;
@@ -103,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Contact Buddy"),
+        title: const Text("Contents Buddy"),
       ),
       body: Column(
         children: [
@@ -122,14 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ViewUser(
-                                          user: _foundUsers[index],
-                                        )));
-                          },
+                          onTap: () {},
                           leading: CircleAvatar(
                               backgroundColor: Colors.transparent,
                               child: SizedBox(
